@@ -1,0 +1,108 @@
+---
+import type { PokemonColors } from '../api/pokemon'
+import { getColorPaletteFromType, PokemonTypeColorPaletteKey } from '../helpers/colors.helper'
+import { capitaliseFirstLetter, formatNumberToThreeDigits } from '../helpers/formatting.helper'
+import Pill from './Pill.astro'
+
+export type Sprite = string | null | undefined
+
+export interface Props {
+	id: number
+	title: string
+	img: Sprite
+	href: string
+	types: string[]
+	colors: PokemonColors
+}
+
+const { id, title, img, href, types, colors } = Astro.props
+const { colorDefault } = colors
+
+const typesWithColors = types.map((type) => {
+	const typePalette = getColorPaletteFromType(
+		capitaliseFirstLetter(type) as PokemonTypeColorPaletteKey
+	)
+	return {
+		name: type,
+		colors: typePalette
+	}
+})
+---
+
+<li class="Card">
+	<a class="Card__link" href={href}>
+		<div class="Card__top">
+			<img class="Card__img" src={img} loading="lazy" role="presentation" />
+		</div>
+		<div class="Card__bottom">
+			<h2 class="Card__heading">{title} <span class="Card__id">&#35;{formatNumberToThreeDigits(id)}</span></h2>
+			<div class="Card__pills">
+				{typesWithColors.map(({ name, colors }) => (
+					<div class="Card__pill" >
+						<Pill text={capitaliseFirstLetter(name)} colors={colors} />
+					</div>
+				))}
+			</div>
+		</div>
+	</a>
+</li>
+
+<style define:vars={{ colorDefault }}>
+	.Card {
+		list-style: none;
+		border-radius: var(--radius-default);
+		border: 1px solid var(--color-border-lightest);
+		box-shadow: var(--shadow-default);
+		transform: scale(1);
+		transition: var(--transition-default);
+
+		&:hover {
+			transform: scale(1.02);
+			box-shadow: var(--shadow-darker);
+		}
+	}
+
+	.Card__link {
+		width: 100%;
+		overflow: hidden;
+		text-decoration: none;
+		color: var(--color-text);
+		border-radius: var(--radius-default);
+	}
+
+	.Card__top {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-top-left-radius: var(--radius-default);
+		border-top-right-radius: var(--radius-default);
+		padding: 20px 0;
+		background-color: var(--colorDefault);
+		background-image: url('/background-pattern.svg');
+	}
+
+	.Card__bottom {
+		padding: 22px 24px 28px;
+		background-color: var(--color-white);
+		border-bottom-left-radius: var(--radius-default);
+		border-bottom-right-radius: var(--radius-default);
+	}
+
+	.Card__id {
+		font-size: 12px;
+		color: var(--color-text-light);
+	}
+
+	.Card__pills {
+		display: flex;
+	}
+
+	.Card__pill {
+		margin-right: var(--spacing-small);
+	}
+
+	.Card__pill:last-of-type {
+		margin-bottom: 0;
+	}
+</style>

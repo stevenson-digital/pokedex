@@ -1,0 +1,206 @@
+---
+import { AllPokemonTypes } from '../helpers/colors.helper'
+---
+
+<form class="FilterBar">
+	<div class="FilterBar__left">
+		<div class="FilterBar__filter">
+			<label class="FilterBar__label" for="sort-by">Sort by:</label>
+			<select
+				id="sort-by"
+				class="FilterBar__select"
+				aria-label="Sort by"
+				aria-controls="pokemon-list"
+			>
+				<option value="id-asc">ID (Ascending)</option>
+				<option value="id-desc">ID (Decending)</option>
+				<option value="name-asc">Name (A-Z)</option>
+				<option value="name-desc">Name (Z-A)</option>
+			</select>
+		</div>
+		<div class="FilterBar__filter">
+			<label class="FilterBar__label" for="filter-types">Filter types:</label>
+			<select
+				id="filter-types"
+				class="FilterBar__select"
+				aria-label="Sort by"
+				aria-controls="pokemon-list"
+			>
+				<option value="all">All</option>
+				{AllPokemonTypes.map((type) => (<option value={type}>{type}</option>))}
+			</select>
+		</div>
+	</div>
+	<input class="FilterBar__submit" type="submit" value="Apply">
+</form>
+
+<style>
+	.FilterBar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		position: sticky;
+    top: -9px;
+    z-index: 1;
+    background-color: var(--color-white);
+    padding: 20px 20px 18px;
+    border: 1px solid var(--color-border-lightest);
+    border-radius: var(--radius-default);
+    margin-bottom: 32px;
+		box-shadow: var(--shadow-default);
+		gap: var(--grid-gap);
+
+		@media (max-width: 640px) {
+			position: fixed;
+			top: auto;
+			bottom: -1px;
+			left: 0;
+			width: calc(100% - var(--spacing-large));
+			flex-direction: column;
+			margin-bottom: 0;
+			padding: var(--grid-gap);
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+			border-bottom: none;
+			box-shadow: none;
+			gap: 0;
+		}
+	}
+
+	.FilterBar__left {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--grid-gap);
+
+		@media (max-width: 640px) {
+			margin-bottom: var(--grid-gap);
+			width: 100%;
+		}
+	}
+
+	.FilterBar__filter {
+		position: relative;
+
+		&:after {
+			content: '';
+			width: 15px;
+			height: 15px;
+			position: absolute;
+			top: 6px;
+			right: 4px;
+			z-index: -1;
+			background-image: url('/chevron-right.svg');
+			background-color: var(--color-white);
+  		background-size: 10px;
+			background-repeat: no-repeat;
+			background-position: 3px;
+			transform: rotate(90deg);
+		}
+
+		@media (max-width: 640px) {
+			flex: 1;
+
+			&:after {
+				top: 32px;
+			}
+		}
+	}
+
+	.FilterBar__label {
+		margin-right: var(--spacing-small);
+		font-weight: bold;
+
+		@media (max-width: 640px) {
+			display: block;
+			margin-bottom: var(--spacing-small);
+		}
+	}
+
+	.FilterBar__select {
+		border-radius: var(--radius-smallest);
+		border: 1px solid var(--color-border-default);
+		padding: 5px 20px 5px var(--spacing-small);
+		appearance: none;
+		background: transparent;
+		cursor: pointer;
+
+		@media (max-width: 640px) {
+			width: 100%;
+		}
+	}
+
+	.FilterBar__submit {
+		@media (max-width: 640px) {
+			width: 100%;
+		}
+	}
+</style>
+
+<script>
+	import { filterAndSortPokemonCards, getUrlFilterValues } from '../helpers/filtering.helper'
+
+	// Filter on page load if search params exist
+	const { sortBy, filterType } = getUrlFilterValues()
+
+	if (sortBy && filterType) {
+		const PokemonCardElems = document.querySelectorAll('.Pokedex__card')
+
+		filterAndSortPokemonCards(sortBy, filterType, PokemonCardElems)
+		.then(() => {
+			window.scrollTo({
+				top: 0,
+				left: 0,
+			})
+		})
+		.catch(console.error)
+	}
+
+	const gridElem = document.querySelector('.Pokedex__grid')
+	gridElem?.classList.add('Pokedex__grid--is-visible')
+
+	// Populate filter bar with active selections
+	if (sortBy) {
+		const sortByElem = document.getElementById('sort-by') as HTMLSelectElement 
+		sortByElem.value = sortBy
+	}
+
+	if (filterType) {
+		const filterTypeElem = document.getElementById('filter-types') as HTMLSelectElement 
+		filterTypeElem.value = filterType || 'all'
+	}
+
+	// Filter via the filter bar
+	const filterBarElem = document.querySelector('.FilterBar') as HTMLFormElement
+
+	filterBarElem.addEventListener('submit', (event) => {
+		event.preventDefault()
+
+		// Reset grid
+		const PokemonCardElems = document.querySelectorAll('.Pokedex__card')
+		PokemonCardElems.forEach((cardElem) => cardElem.classList.remove('Pokedex__card--is-hidden'))
+
+		// Get query
+		const sortBy = (document.getElementById('sort-by') as HTMLSelectElement).value
+		const filterType = (document.getElementById('filter-types') as HTMLSelectElement).value
+		
+		filterAndSortPokemonCards(sortBy, filterType, PokemonCardElems)
+		.then(() => {
+			window.scrollTo({
+				top: 0,
+				left: 0,
+				behavior: 'smooth'
+			})
+		})
+		.catch(console.error)
+
+		// Update the URL for sharable links
+		const url = new URL(window.location.href)
+		const searchParams = new URLSearchParams(url.search)
+
+		searchParams.set('sortBy', sortBy)
+		searchParams.set('filterType', filterType)
+		url.search = searchParams.toString()
+		
+		window.history.pushState({}, '', url.toString())
+	})
+</script>

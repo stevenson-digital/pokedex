@@ -1,0 +1,26 @@
+---
+import type { PokemonColors } from '../api/pokemon';
+
+export interface Props {
+	text: string
+	colors: PokemonColors
+}
+
+const { colors, text } = Astro.props
+const { colorLight, colorDefault, colorDark } = colors
+---
+
+<div class="Pill">{text}</div>
+
+<style define:vars={{ colorLight, colorDefault, colorDark }}>
+	.Pill {
+		padding: 7px var(--spacing-default);
+		color: var(--color);
+		font-weight: bold;
+		border-radius: var(--radius-small);
+		font-size: 12px;
+		background-color: var(--colorWhite);
+		color: var(--colorDefault);
+		border: 2px solid var(--colorDefault);
+	}
+</style>

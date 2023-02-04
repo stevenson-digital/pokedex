@@ -1,0 +1,96 @@
+---
+export interface Props {
+	title: string
+}
+
+const { title } = Astro.props
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{title}</title>
+	</head>
+	<body>
+		<div class="Layout">
+			<slot />
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--color-white: #ffffff;
+		--color-black: #0b0b0b;
+		--color-grey: #939292;
+
+		--color-background: #f4f4f4;
+		--color-text: var(--color-black);
+		--color-text-light: #707070;
+		--color-border-lightest: #e5e5e5;
+		--color-border-default: #a3a3a3;
+
+		--radius-smallest: 4px;
+		--radius-small: 8px;
+		--radius-default: 12px;
+		--radius-large: 22px;
+
+		--shadow-default: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+		--shadow-darker: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -2px rgba(0, 0, 0, 0.18);
+		--shadow-darkest: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.18);
+
+		--transition-default: all 200ms ease-in-out;
+
+		--spacing-small: 8px;
+		--spacing-default: 16px;
+		--spacing-large: 32px;
+
+		--grid-gap: var(--spacing-default);
+	}
+	
+	html {
+		font-family: system-ui, sans-serif;
+		background-color: var(--color-background);
+		color: var(--color-text);
+	}
+
+	body {
+		margin: 0;
+	}
+	
+	.Container {
+		margin: auto;
+		padding: 0 var(--grid-gap);
+		max-width: 60ch;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 0;
+	}
+	
+	h1 {
+		font-size: 3rem;
+		font-weight: 800;
+	}
+
+	input[type='submit'] {
+		cursor: pointer;
+		padding: 12px var(--spacing-large);
+    background-color: var(--color-black);
+    color: var(--color-white);
+    text-transform: uppercase;
+    font-weight: bold;
+    border: none;
+    border-radius: var(--radius-small);
+		box-shadow: var(--shadow-darker);
+		transition: var(--transition-default);
+
+		&:hover {
+			background-color: var(--color-grey);
+			box-shadow: var(--shadow-darkest);
+		}
+	}
+</style>

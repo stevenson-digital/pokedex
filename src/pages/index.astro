@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro'
+import FilterBar from '../components/FilterBar.astro'
+import Card from '../components/Card.astro'
+import { getPokemonCards } from '../api/pokemon'
+import { capitaliseFirstLetter } from '../helpers/formatting.helper'
+import PokemonLogo from '../components/PokemonLogo.astro'
+
+const pokemonCards = await getPokemonCards(
+	import.meta.env.POKE_API_BASE_URL
+)
+---
+
+<Layout title="Pokedex">
+	<header class="Container">
+		<div class="Pokedex__logo">
+			<PokemonLogo />
+		</div>
+	</header>
+	<main class="Container">
+		<FilterBar />
+		<ul id="pokemon-list" role="list" class="Pokedex__grid">
+			{pokemonCards.map(({ id, name, sprites, colors, types }) => {
+				return (
+					<div class="Pokedex__card">
+						<Card
+							id={id}
+							href={name.toLowerCase()}
+							title={capitaliseFirstLetter(name)}
+							img={sprites.front_default}
+							types={types}
+							colors={colors}
+						/>
+					</div>
+				)
+			})}
+		</ul>
+	</main>
+</Layout>
+
+<style>
+	.Pokedex__logo {
+		width: 200px;
+		margin: var(--spacing-large) auto;
+	}
+
+	.Pokedex__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: var(--grid-gap);
+		padding: 0 0 var(--spacing-large) 0;
+		margin: 0;
+		opacity: 0;
+
+		@media (max-width: 640px) {
+			padding: 0 0 calc(140px + var(--spacing-large)) 0;
+		}
+	}
+
+	.Pokedex__grid--is-visible {
+		opacity: 1;
+	}
+
+	.Pokedex__card--is-hidden {
+		display: none;
+	}
+</style>

@@ -1,0 +1,11 @@
+{
+  "extends": "astro/tsconfigs/strictest",
+  "files": [
+    ".eslintrc.cjs",
+    "postcss.config.cjs"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.astro"
+  ]
+}
