@@ -22,7 +22,7 @@ const pokemonCards = await getPokemonCards(
 		<ul id="pokemon-list" role="list" class="Pokedex__grid">
 			{pokemonCards.map(({ id, name, sprites, colors, types }) => {
 				return (
-					<div class="Pokedex__card">
+					<li class="Pokedex__card">
 						<Card
 							id={id}
 							href={name.toLowerCase()}
@@ -31,7 +31,7 @@ const pokemonCards = await getPokemonCards(
 							types={types}
 							colors={colors}
 						/>
-					</div>
+					</li>
 				)
 			})}
 		</ul>
@@ -59,6 +59,10 @@ const pokemonCards = await getPokemonCards(
 
 	.Pokedex__grid--is-visible {
 		opacity: 1;
+	}
+
+	.Pokedex__card {
+		list-style: none;
 	}
 
 	.Pokedex__card--is-hidden {

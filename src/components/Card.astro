@@ -29,7 +29,7 @@ const typesWithColors = types.map((type) => {
 })
 ---
 
-<li class="Card">
+<div class="Card">
 	<a class="Card__link" href={href}>
 		<div class="Card__top">
 			<img class="Card__img" src={img} loading="lazy" role="presentation" />
@@ -45,11 +45,10 @@ const typesWithColors = types.map((type) => {
 			</div>
 		</div>
 	</a>
-</li>
+</div>
 
 <style define:vars={{ colorDefault }}>
 	.Card {
-		list-style: none;
 		border-radius: var(--radius-default);
 		border: 1px solid var(--color-border-lightest);
 		box-shadow: var(--shadow-default);
