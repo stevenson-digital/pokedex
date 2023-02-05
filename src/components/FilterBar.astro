@@ -101,7 +101,12 @@ import { AllPokemonTypes } from '../helpers/colors.helper'
 			flex: 1;
 
 			&:after {
-				top: 32px;
+				top: 33px;
+
+				@supports (-webkit-touch-callout: none) {
+					/* CSS specific to iOS devices */ 
+					top: 35px;
+				}
 			}
 		}
 	}
@@ -122,6 +127,7 @@ import { AllPokemonTypes } from '../helpers/colors.helper'
 		padding: 5px 20px 5px var(--spacing-small);
 		appearance: none;
 		background: transparent;
+		color: var(--color-text);
 		cursor: pointer;
 
 		@media (max-width: 640px) {
@@ -130,6 +136,8 @@ import { AllPokemonTypes } from '../helpers/colors.helper'
 	}
 
 	.FilterBar__submit {
+		-webkit-appearance: none;
+
 		@media (max-width: 640px) {
 			width: 100%;
 		}
